@@ -3,9 +3,9 @@ package com.parkinglot.model;
 import java.util.*;
 
 public class ParkingLot {
-    Integer parkingLotSize;
-    TreeMap<Integer, Slot> parkedSlots;
-    TreeSet<Integer> availableSlots;
+    private Integer parkingLotSize;
+    private TreeMap<Integer, Slot> parkedSlots;
+    private TreeSet<Integer> availableSlots;
 
     public ParkingLot(Integer parkingLotSize){
         this.parkingLotSize = parkingLotSize;

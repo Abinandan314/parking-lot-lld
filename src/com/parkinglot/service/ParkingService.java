@@ -4,6 +4,10 @@ import com.parkinglot.model.ParkingLot;
 import com.parkinglot.model.Slot;
 import com.parkinglot.model.Vehicle;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 public class ParkingService {
     private ParkingLot parkingLot;
 
@@ -37,5 +41,21 @@ public class ParkingService {
         for (var entry : this.parkingLot.getParkedSlots().entrySet()){
             System.out.println(entry.getKey() + " => " + entry.getValue().getVehicle().getRegistrationNumber()+ " => " + entry.getValue().getVehicle().getColor());
         }
+    }
+
+    public List<String> getRegistrationNumbersByColor(String color){
+        return this.parkingLot.getParkedSlots().values().stream()
+                .map(Slot::getVehicle).filter(vehicle -> Objects.equals(vehicle.getColor(), color)).map(Vehicle::getRegistrationNumber).toList();
+    }
+
+    public Optional<Vehicle> getVehicleByRegistrationNumber(String registrationNumber){
+
+        return this.parkingLot.getParkedSlots().values().stream()
+                .map(Slot::getVehicle).filter(vehicle -> vehicle.getRegistrationNumber().equals(registrationNumber)).findAny();
+    }
+
+    public List<Integer> getSlotNumberByColor(String color){
+        return this.parkingLot.getParkedSlots().values().stream()
+                .filter(slot -> slot.getVehicle().getColor().equals(color)).map(Slot::getSlotNumber).toList();
     }
 }
