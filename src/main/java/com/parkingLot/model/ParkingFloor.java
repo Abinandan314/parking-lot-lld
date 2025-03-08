@@ -1,14 +1,12 @@
 package com.parkingLot.model;
 
+import com.parkingLot.strategy.ParkingStrategy;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @Setter
@@ -16,50 +14,46 @@ import java.util.UUID;
 @Builder
 public class ParkingFloor {
     String floorId;
-    Map<String,ParkingSlot> parkedSlots;
-    Map<ParkingSlot.ParkingSlotType, PriorityQueue<ParkingSlot>> availableSlots; //denotes floor wise parking slots
+    Map<String,ParkingSlot> parkingSlots;
+
+    ParkingStrategy parkingStrategy;
 
     public ParkingFloor(String floorId){
         this.floorId = floorId;
-        this.parkedSlots = new HashMap<>();
-        this.availableSlots = new HashMap<>();
+        this.parkingSlots = new HashMap<>();
+    }
+
+    public ParkingFloor(String floorId,ParkingStrategy parkingStrategy){
+        this.floorId = floorId;
+        this.parkingSlots = new HashMap<>();
+        this.parkingStrategy = parkingStrategy;
     }
 
     public void addParkingSlotsToFloor(ParkingSlot parkingSlot){
-        availableSlots.computeIfAbsent(parkingSlot.getParkingSlotType(), k -> new PriorityQueue<>()).add(parkingSlot);
-    }
-
-    public ParkingSlot getBestParkingSpot(ParkingSlot.ParkingSlotType parkingSlotType){
-        var priorityQueue = availableSlots.get(parkingSlotType);
-
-        return priorityQueue.poll();
-    }
-
-    private ParkingSlot.ParkingSlotType getParkingSlotTypeForVehicleType(Vehicle.VehicleType vehicleType){
-        if (vehicleType.equals(Vehicle.VehicleType.CAR)) return ParkingSlot.ParkingSlotType.CAR;
-        if (vehicleType.equals(Vehicle.VehicleType.TWO_WHEELER)) return ParkingSlot.ParkingSlotType.TWO_WHEELER;
-
-        return ParkingSlot.ParkingSlotType.COMPACT;
+        parkingSlots.put(parkingSlot.getId(), parkingSlot);
+        parkingStrategy.addParkingSlot(parkingSlot);
     }
 
     public ParkingTicket parkVehicle(Vehicle vehicle, ParkingSlot.ParkingSlotType parkingSlotType){
-
-        ParkingSlot parkingSlot = getBestParkingSpot(parkingSlotType);
+        ParkingSlot parkingSlot = parkingStrategy.getBestSlotForParking(parkingSlotType);
 
         parkingSlot.setVehicle(vehicle);
+        parkingSlot.setIsOccupied(true);
 
-        parkedSlots.put(parkingSlot.getId(),parkingSlot);
-
-        return ParkingTicket.builder().id(UUID.randomUUID().toString()).parkingSlotId(parkingSlot.getId()).parkingSlotType(parkingSlotType.name()).parkingFloorId(floorId).build();
+        return ParkingTicket.builder().id(UUID.randomUUID().toString()).parkingFloorId(floorId).parkingSlotId(parkingSlot.getId()).build();
     }
 
     public void unParkVehicle(ParkingTicket parkingTicket){
-        ParkingSlot parkingSlot = parkedSlots.get(parkingTicket.getParkingSlotId());
+        ParkingSlot parkingSlot = parkingSlots.get(parkingTicket.getParkingSlotId());
 
-        parkedSlots.remove(parkingTicket.getId());
+        if (Objects.isNull(parkingSlot)){
+            System.out.println("This is not a valid parking slot id");
+            return;
+        }
+        parkingSlot.setVehicle(null);
+        parkingSlot.setIsOccupied(false);
+        parkingStrategy.unParkVehicle(parkingSlot);
 
-        availableSlots.computeIfAbsent(
-                parkingSlot.getParkingSlotType(),k -> new PriorityQueue<>()
-        ).add(parkingSlot);
     }
+
 }

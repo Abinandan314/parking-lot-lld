@@ -27,14 +27,14 @@ public class ParkingService {
         if (Objects.isNull(parkingFloor)){
             return null;
         }
-//        System.out.println("SuccessFully Parked Vehicle");
+        System.out.println("SuccessFully Parked Vehicle");
         return parkingFloor.parkVehicle(vehicle,parkingSlotType);
     }
 
     public void unParkVehicle(ParkingTicket parkingTicket){
         ParkingFloor parkingFloor = parkingLot.getParkingFloors().getOrDefault(parkingTicket.getParkingFloorId(),null);
         if (Objects.isNull(parkingFloor)){
-//            System.out.println("Invalid Parking Ticket");
+            System.out.println("Invalid Parking Ticket");
             return;
         }
         parkingFloor.unParkVehicle(parkingTicket);

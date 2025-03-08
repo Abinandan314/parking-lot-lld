@@ -14,6 +14,8 @@ public class ParkingSlot implements Comparable<ParkingSlot>{
     Vehicle vehicle;
     ParkingSlotType parkingSlotType;
     Double distanceFromEntry;
+    @Builder.Default
+    Boolean isOccupied = false;
 
     @Override
     public int compareTo(ParkingSlot otherParkingSlot) {
