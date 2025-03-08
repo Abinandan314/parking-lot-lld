@@ -11,7 +11,6 @@ public class ParkingTicket {
     String id;
     String parkingSlotId;
     String parkingFloorId;
-    String parkingSlotType;
 
     @Override
     public String toString() {
@@ -19,7 +18,6 @@ public class ParkingTicket {
                 "id='" + id + '\'' +
                 ", parkingSlotId='" + parkingSlotId + '\'' +
                 ", parkingFloorId='" + parkingFloorId + '\'' +
-                ", parkingSlotType='" + parkingSlotType + '\'' +
                 '}';
     }
 }

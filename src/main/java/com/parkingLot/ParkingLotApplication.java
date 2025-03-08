@@ -4,6 +4,8 @@ package com.parkingLot;
 import com.parkingLot.handlers.CustomInputHandler;
 import com.parkingLot.model.*;
 import com.parkingLot.service.ParkingService;
+import com.parkingLot.strategy.NearEntryParkingStrategy;
+import com.parkingLot.strategy.ParkingStrategy;
 
 import java.io.IOException;
 
@@ -12,8 +14,9 @@ public class ParkingLotApplication {
     public static void main(String[] args) throws IOException {
         ParkingSlot parkingSlot1 = ParkingSlot.builder().id("slot1").parkingSlotType(ParkingSlot.ParkingSlotType.CAR).distanceFromEntry(0.0).build();
         ParkingSlot parkingSlot2 = ParkingSlot.builder().id("slot2").parkingSlotType(ParkingSlot.ParkingSlotType.CAR).distanceFromEntry(0.5).build();
+        ParkingStrategy parkingStrategy = new NearEntryParkingStrategy();
 
-        ParkingFloor parkingFloor = new ParkingFloor("Floor1");
+        ParkingFloor parkingFloor = new ParkingFloor("Floor1",parkingStrategy);
         parkingFloor.addParkingSlotsToFloor(parkingSlot1);
         parkingFloor.addParkingSlotsToFloor(parkingSlot2);
 

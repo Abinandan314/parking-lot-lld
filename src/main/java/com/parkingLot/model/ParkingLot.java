@@ -38,10 +38,9 @@ public class ParkingLot {
         parkingFloors.put(parkingFloor.getFloorId(),parkingFloor);
     }
 
-    //Also Validates if there's any available slots open.
     public ParkingFloor getAvailableParkingFloor(ParkingSlot.ParkingSlotType parkingSlotType){
         for (var parkingFloor :  parkingFloors.values()){
-            if (!parkingFloor.getAvailableSlots().get(parkingSlotType).isEmpty()){
+            if (parkingFloor.getParkingSlots().values().stream().anyMatch(slot -> !slot.getIsOccupied())){
                 return parkingFloor;
             }
         }
